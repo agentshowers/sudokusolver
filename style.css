@@ -1,0 +1,45 @@
+#board {
+	width: 80%;
+	margin: 0 auto;
+	border: 3px solid black;
+	position: relative;
+}
+
+.tile {
+	border: 1px solid black;
+	position: absolute;
+}
+
+.tile.thirdhorizontal {
+	border-right: 3px solid black;
+}
+
+.tile.thirdvertical {
+	border-bottom: 3px solid black;
+}
+
+.tile_input {
+	width:90%;
+	height:90%;
+	top:5%;
+	left:5%;
+	position: absolute;
+	box-sizing : border-box;
+	text-align: center;
+	font-size: 2em;
+	border-width:0px;
+	border:none;
+}
+
+@media screen and (min-width: 1366px) {
+    #board  {width: 70%;}
+}
+@media screen and (min-width: 1440px) {
+    #board  {width: 60%;}
+}
+@media screen and (min-width: 1600px) {
+    #board  {width: 50%;}
+}
+@media screen and (min-width: 1920px) {
+    #board  {width: 40%;}
+}
