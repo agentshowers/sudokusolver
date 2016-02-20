@@ -19,27 +19,16 @@ square.prototype.zone = function () {
 square.prototype.hasValue = function () {
 	return this.value !== undefined;
 }
+
 square.prototype.getValue = function () {
 	return this.value;
 }
 
 square.prototype.setValue = function (newValue) {
-	if (this.value === newValue) {
-		return;
-	}
-
-	if (this.value !== undefined){
-		sudokuBoard.restorePossibilities(this.x,this.y,this.value);
-	}
-	
 	this.value = newValue;
-	sudokuBoard.removePossibilities(this.x,this.y,newValue);
 }
 
 square.prototype.clearValue = function () {
-	if (this.value !== undefined){
-		sudokuBoard.restorePossibilities(this.x,this.y,this.value);
-	}
 	this.value = undefined;
 }
 

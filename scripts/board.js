@@ -9,7 +9,12 @@ function board (){
 }
 
 board.prototype.setValue = function(x, y, value){
+	var currentValue = this.innerBoard[x][y].getValue();
+	if (currentValue !== undefined){
+		this.restorePossibilities(x,y,currentValue);
+	}
 	this.innerBoard[x][y].setValue(value);
+	this.removePossibilities(x,y,value);
 }
 
 board.prototype.getValue = function(x, y){
@@ -21,7 +26,15 @@ board.prototype.hasValue = function(x, y){
 }
 
 board.prototype.clearValue = function(x, y){
+	var currentValue = this.innerBoard[x][y].getValue();
+	if (currentValue !== undefined){
+		this.restorePossibilities(x,y,currentValue);
+	}
 	this.innerBoard[x][y].clearValue();
+}
+
+board.prototype.getPossibleValues = function(x,y){
+	return this.innerBoard[x][y].possibleValues;
 }
 
 board.prototype.removePossibilities = function(x, y, value){
@@ -46,6 +59,21 @@ board.prototype.restorePossibilities = function(x, y, value){
 board.prototype.toJSON = function(){
 	return JSON.stringify(this.innerBoard);
 }
+	
+function boardFromJSON (json){
+	var newBoard = new board();
+	var inner = [];
+	var obj = JSON.parse(json);
+	for (var i=0;i<9;i++){
+		inner[i] = new Array(9);
+		for (var j=0;j<9;j++){
+			inner[i][j] = new square(i,j,obj[i][j].possibleValues,obj[i][j].value);
+		}
+	}
+	newBoard.innerBoard = inner;
+	return newBoard;
+}
+
 
 board.prototype.debug = function (){
 	var text = ' -----------------------------------------------------------------------\n';
@@ -70,18 +98,6 @@ board.prototype.toString = function(x, y, possible) {
 		return possible;
 	}
 	return ' ';
-}
-	
-function boardFromJSON (json){
-	var newBoard = [];
-	var obj = JSON.parse(json);
-	for (var i=0;i<9;i++){
-		newBoard[i] = new Array(9);
-		for (var j=0;j<9;j++){
-			newBoard[i][j] = new square(i,j,obj[i][j].possibleValues,obj[i][j].value);
-		}
-	}
-	sudokuBoard.innerBoard = newBoard;
 }
 
 var sudokuBoard = new board();

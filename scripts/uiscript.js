@@ -106,7 +106,7 @@ function loadBoard (event) {
 	var reader = new FileReader();
 
 	reader.onload = function(event) {
-		boardFromJSON(event.target.result);
+		sudokuBoard = boardFromJSON(event.target.result);
 		refresh();
 	}
 	reader.readAsText(event.target.files[0]);
