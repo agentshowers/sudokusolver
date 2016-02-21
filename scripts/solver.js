@@ -101,7 +101,41 @@ sudokuSolver.prototype.checkSingleColumn = function(column){
 
 sudokuSolver.prototype.checkSingleZone = function(zone) {
 	var changed = false;
+	var x_zone = Math.floor(zone / 3);
+	var y_zone = zone % 3;
+	
 	var availableSquares = [];
+	for(var i=0; i<9; i++) {
+		availableSquares[i] = new Array();
+	}
+	
+	for(var i=0; i<9; i++) {
+		for (var r=0; r<3; r++) {
+			for (var c=0; c<3; c++) {
+				var row = x_zone * 3 + r;
+				var column = y_zone * 3 + c;
+				if (this.board[row][column].hasValue()){
+					availableSquares[this.board[row][column].value - 1].push({x:row, y:column});
+				} else if (this.board[row][column].isValuePossible(i+1)) {
+					availableSquares[i].push({x:row, y:column});
+				}
+			}
+		}
+	}
+	
+	for(var i=0; i<9; i++) {
+		if (availableSquares[i].length === 0) {
+			throw 'Impossible Board';
+		}
+		if (availableSquares[i].length === 1) {
+			var row = availableSquares[i][0].x;
+			var column = availableSquares[i][0].y;
+			if (!this.board[row][column].hasValue()){
+				this.board[row][column].setValue(i+1);
+				changed = true;
+			}
+		}
+	}
 	
 	return changed;
 }
