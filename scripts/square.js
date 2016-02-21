@@ -50,4 +50,8 @@ square.prototype.restorePossibleValue = function (newValue) {
 	}
 }
 
+square.prototype.clone = function(){
+	return $.extend(true,{},this);
+}
+
 

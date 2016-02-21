@@ -37,6 +37,10 @@ board.prototype.getPossibleValues = function(x,y){
 	return this.innerBoard[x][y].possibleValues;
 }
 
+board.prototype.isValuePossible = function(x, y, value){
+	return this.innerBoard[x][y].isValuePossible(value);
+}
+
 board.prototype.removePossibilities = function(x, y, value){
 	for (var i=0;i<9;i++){
 		for (var j=0;j<9;j++){
@@ -56,6 +60,17 @@ board.prototype.restorePossibilities = function(x, y, value){
 		}
 	}
 }	
+
+board.prototype.clone = function (){
+	var clonedBoard = new board();
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			clonedBoard.innerBoard[i][j] = this.innerBoard[i][j].clone();
+		}
+	}
+	return clonedBoard;
+}
+
 board.prototype.toJSON = function(){
 	return JSON.stringify(this.innerBoard);
 }
