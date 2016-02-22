@@ -112,6 +112,11 @@ function loadBoard (event) {
 	reader.readAsText(event.target.files[0]);
 }
 
+function clearBoard() {
+	sudokuBoard = new board();
+	refresh();
+}
+
 function loadEasy (){
 	sudokuBoard = boardFromText('003020600900305001001806400008102900700000008006708200002609500800203009005010300');
 	refresh();
