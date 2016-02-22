@@ -1,0 +1,22 @@
+var textEmptyBoard = '000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+var textSomeBoard = '100000000020000000003000000000400000000050000000006000000000700000000080000000009';
+var textFullBoard = '123456789456789123789123456234567891567891234891234567345678912678912345912345678';
+
+var emptyBoard = new board();
+
+var someBoard = new board();
+for (var i=0;i<9;i++){
+	someBoard.setValue(i,i,i+1);
+}
+
+var fullBoard = new board();
+for (var b=0;b<3;b++){
+	for (var i=0;i<3;i++){
+		for (var j=0; j<9; j++) {
+			var row = i + b*3;
+			fullBoard.setValue(row, j,((3*i + j + b) % 9) + 1);
+		}
+	}
+}
+
+var simpleBoard = boardFromText('003020600900305001001806400008102900700000008006708200002609500800203009005010300');
