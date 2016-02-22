@@ -22,7 +22,8 @@
   </head>
   <body onresize="resize()">
     <div id="board"></div>
-	<input type="submit" value="Solve" onclick="solveBoard()"><br>
+	<input id="solveButton" type="submit" value="Solve" onclick="solveBoard()"><br>
+	<input id="loadEasyButton" type="submit" value="Load Easy Board" onclick="loadEasy()"><br>
 	<input type="submit" value="Save" onclick="saveBoard()"><br>
 	<input type="file" value="Load" id="fileupload"><br>
 	<input type="submit" value="Debug" onclick="debugBoard()"><br>
