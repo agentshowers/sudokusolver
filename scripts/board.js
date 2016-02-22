@@ -9,12 +9,16 @@ function board (){
 }
 
 board.prototype.setValue = function(x, y, value){
+	if (value === undefined){
+		return;
+	}
+	
 	var currentValue = this.innerBoard[x][y].getValue();
 	if (currentValue !== undefined){
 		this.restorePossibilities(x,y,currentValue);
 	}
-	this.innerBoard[x][y].setValue(value);
 	this.removePossibilities(x,y,value);
+	this.innerBoard[x][y].setValue(value);
 }
 
 board.prototype.getValue = function(x, y){
@@ -27,10 +31,13 @@ board.prototype.hasValue = function(x, y){
 
 board.prototype.clearValue = function(x, y){
 	var currentValue = this.innerBoard[x][y].getValue();
+	
 	if (currentValue !== undefined){
 		this.restorePossibilities(x,y,currentValue);
 	}
 	this.innerBoard[x][y].clearValue();
+	this.recalculatePossibleValues(x,y);
+
 }
 
 board.prototype.getPossibleValues = function(x,y){
@@ -56,10 +63,33 @@ board.prototype.restorePossibilities = function(x, y, value){
 		for (var j=0;j<9;j++){
 			if (i === x || j === y || this.innerBoard[x][y].zone() === this.innerBoard[i][j].zone()) {
 				this.innerBoard[i][j].restorePossibleValue(value);
+				this.innerBoard[x][y].removePossibleValue(this.getValue(i,j));
 			}
 		}
 	}
-}	
+}
+
+board.prototype.recalculatePossibleValues = function (x, y, value){
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			if (i === x || j === y || this.innerBoard[x][y].zone() === this.innerBoard[i][j].zone()) {
+				this.innerBoard[x][y].removePossibleValue(this.getValue(i,j));
+			}
+		}
+	}
+}
+
+board.prototype.isSolved = function (){
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			if (!this.hasValue(i,j)) {
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}
 
 board.prototype.clone = function (){
 	var clonedBoard = new board();
@@ -71,22 +101,38 @@ board.prototype.clone = function (){
 	return clonedBoard;
 }
 
-board.prototype.toJSON = function(){
-	return JSON.stringify(this.innerBoard);
+
+board.prototype.toText = function(){
+	return this.innerBoard.map ( 
+		function(row) {
+			return row.map(valueToText).reduce(function(a, b) {return a + '' + b;}, '');
+		})
+		.reduce(function(a, b) {return a + '' + b;}, '');
+}
+
+function valueToText (elem) {
+	if (elem.value === undefined) {
+		return '0';
+	} 
+	return elem.value;
 }
 	
-function boardFromJSON (json){
+function boardFromText (text){
 	var newBoard = new board();
-	var inner = [];
-	var obj = JSON.parse(json);
 	for (var i=0;i<9;i++){
-		inner[i] = new Array(9);
 		for (var j=0;j<9;j++){
-			inner[i][j] = new square(i,j,obj[i][j].possibleValues,obj[i][j].value);
+			newBoard.setValue(i,j,textToValue(text.charAt(i*9+j)));
 		}
 	}
-	newBoard.innerBoard = inner;
+
 	return newBoard;
+}
+
+function textToValue (text) {
+	if (text === '0') {
+		return undefined;
+	}
+	return +text;
 }
 
 

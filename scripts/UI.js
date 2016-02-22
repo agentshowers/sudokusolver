@@ -93,8 +93,8 @@ function solveBoard(){
 
 function saveBoard() {
 	var element = document.createElement('a');
-	element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(sudokuBoard.toJSON()));
-	element.setAttribute('download', 'board.json');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(sudokuBoard.toText()));
+	element.setAttribute('download', 'board.txt');
 	element.style.display = 'none';
 	 
 	document.body.appendChild(element);
@@ -106,7 +106,7 @@ function loadBoard (event) {
 	var reader = new FileReader();
 
 	reader.onload = function(event) {
-		sudokuBoard = boardFromJSON(event.target.result);
+		sudokuBoard = boardFromText(event.target.result);
 		refresh();
 	}
 	reader.readAsText(event.target.files[0]);

@@ -26,10 +26,12 @@ square.prototype.getValue = function () {
 
 square.prototype.setValue = function (newValue) {
 	this.value = newValue;
+	this.possibleValues = [newValue];
 }
 
 square.prototype.clearValue = function () {
 	this.value = undefined;
+	this.possibleValues = [1,2,3,4,5,6,7,8,9];
 }
 
 square.prototype.isValuePossible = function (value) {

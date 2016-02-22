@@ -1,5 +1,5 @@
 function sudokuSolver(boardToSolve) {
-	this.board = boardToSolve.innerBoard;
+	this.board = boardToSolve;
 }
 
 sudokuSolver.prototype.solve = function(){
@@ -12,7 +12,7 @@ sudokuSolver.prototype.solve = function(){
 			changed = changed || this.checkSingleColumn(i);
 			changed = changed || this.checkSingleZone(i);
 		}
-	} while(changed);
+	} while(changed && !this.board.isSolved());
 }
 
 sudokuSolver.prototype.checkSingularTiles = function(){
@@ -20,11 +20,11 @@ sudokuSolver.prototype.checkSingularTiles = function(){
 	
 	for (var i=0;i<9;i++){
 		for (var j=0;j<9;j++) {
-			if (!this.board[i][j].hasValue() && this.board[i][j].possibleValues.length === 0){
+			if (!this.board.hasValue(i,j) && this.board.getPossibleValues(i,j).length === 0){
 				throw  'Impossible Board';
 			}
-			if (!this.board[i][j].hasValue() && this.board[i][j].possibleValues.length === 1){
-				this.board[i][j].setValue(this.board[i][j].possibleValues[0]);
+			if (!this.board.hasValue(i,j) && this.board.getPossibleValues(i,j).length === 1){
+				this.board.setValue(i,j,this.board.getPossibleValues(i,j)[0]);
 				changed = true;
 			}
 		}
@@ -43,9 +43,9 @@ sudokuSolver.prototype.checkSingleRow = function(row){
 	
 	for(var i=0; i<9; i++) {
 		for (var j=0; j<9; j++) {
-			if (this.board[row][j].hasValue()){
-				availableSquares[this.board[row][j].value - 1].push(j);
-			} else if (this.board[row][j].isValuePossible(i+1)) {
+			if (this.board.hasValue(row,j)){
+				availableSquares[this.board.getValue(row,j) - 1].push(j);
+			} else if (this.board.isValuePossible(row,j,i+1)) {
 				availableSquares[i].push(j);
 			}
 		}
@@ -57,8 +57,8 @@ sudokuSolver.prototype.checkSingleRow = function(row){
 		}
 		if (availableSquares[i].length === 1) {
 			var column = availableSquares[i][0];
-			if (!this.board[row][column].hasValue()){
-				this.board[row][column].setValue(i+1);
+			if (!this.board.hasValue(row,column)){
+				this.board.setValue(row,column,i+1);
 				changed = true;
 			}
 		}
@@ -76,9 +76,9 @@ sudokuSolver.prototype.checkSingleColumn = function(column){
 	
 	for(var j=0; j<9; j++) {
 		for (var i=0; i<9; i++) {
-			if (this.board[i][column].hasValue()){
-				availableSquares[this.board[i][column].value - 1].push(i);
-			} else if (this.board[i][column].isValuePossible(j+1)) {
+			if (this.board.hasValue(i,column)){
+				availableSquares[this.board.getValue(i,column) - 1].push(i);
+			} else if (this.board.isValuePossible(i,column,j+1)) {
 				availableSquares[j].push(i);
 			}
 		}
@@ -90,8 +90,8 @@ sudokuSolver.prototype.checkSingleColumn = function(column){
 		}
 		if (availableSquares[j].length === 1) {
 			var row = availableSquares[j][0];
-			if (!this.board[row][column].hasValue()){
-				this.board[row][column].setValue(j+1);
+			if (!this.board.hasValue(row,column)){
+				this.board.setValue(row,column,j+1);
 				changed = true;
 			}
 		}
@@ -114,9 +114,9 @@ sudokuSolver.prototype.checkSingleZone = function(zone) {
 			for (var c=0; c<3; c++) {
 				var row = x_zone * 3 + r;
 				var column = y_zone * 3 + c;
-				if (this.board[row][column].hasValue()){
-					availableSquares[this.board[row][column].value - 1].push({x:row, y:column});
-				} else if (this.board[row][column].isValuePossible(i+1)) {
+				if (this.board.hasValue(row,column)){
+					availableSquares[this.board.getValue(row,column) - 1].push({x:row, y:column});
+				} else if (this.board.isValuePossible(row,column,i+1)) {
 					availableSquares[i].push({x:row, y:column});
 				}
 			}
@@ -130,8 +130,8 @@ sudokuSolver.prototype.checkSingleZone = function(zone) {
 		if (availableSquares[i].length === 1) {
 			var row = availableSquares[i][0].x;
 			var column = availableSquares[i][0].y;
-			if (!this.board[row][column].hasValue()){
-				this.board[row][column].setValue(i+1);
+			if (!this.board.hasValue(row,column)){
+				this.board.setValue(row,column,i+1);
 				changed = true;
 			}
 		}

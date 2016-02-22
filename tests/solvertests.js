@@ -50,3 +50,10 @@ QUnit.test("Validate simple solver scenarios", function( assert ) {
 	
 	assert.equal(aBoard.getValue(0,2),3,"Expected solver to identify single possibility for zone");
 });
+
+QUnit.test("Test that a simple board can be solved", function( assert ) {
+	var boardToSolve = simpleBoard.clone();
+	var aSolver = new sudokuSolver(boardToSolve);
+	aSolver.solve();
+	assert.ok(boardToSolve.isSolved(),"Expected board to be solved");
+});

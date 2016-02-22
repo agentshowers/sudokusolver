@@ -1,30 +1,30 @@
-QUnit.test("Validate board from JSON", function( assert ) {
-	var fromJSON = boardFromJSON(jsonEmptyBoard);
-	assert.boardEquals(fromJSON, emptyBoard, "Check if empty board is correctly read from JSON");
+QUnit.test("Validate board from text", function( assert ) {
+	var fromText = boardFromText(textEmptyBoard);
+	assert.boardEquals(fromText, emptyBoard, "Check if empty board is correctly read from text");
 	
-	fromJSON = boardFromJSON(jsonSomeBoard);
-	assert.boardEquals(fromJSON, someBoard, "Check if random board is correctly read from JSON");
+	fromText = boardFromText(textSomeBoard);
+	assert.boardEquals(fromText, someBoard, "Check if random board is correctly read from text");
 	
-	fromJSON = boardFromJSON(jsonFullBoard);
-	assert.boardEquals(fromJSON, fullBoard, "Check if full board is correctly read from JSON");
+	fromText = boardFromText(textFullBoard);
+	assert.boardEquals(fromText, fullBoard, "Check if full board is correctly read from text");
 });
 
-QUnit.test("Validate board to JSON", function( assert ) {
-	var json = emptyBoard.toJSON();
-	assert.equal(json, jsonEmptyBoard, "Check if empty board is correctly written to JSON");
+QUnit.test("Validate board to text", function( assert ) {
+	var text = emptyBoard.toText();
+	assert.equal(text, textEmptyBoard, "Check if empty board is correctly written to text");
 	
-	json = someBoard.toJSON();
-	assert.equal(json, jsonSomeBoard, "Check if random board is correctly written to JSON");
+	text = someBoard.toText();
+	assert.equal(text, textSomeBoard, "Check if random board is correctly written to text");
 	
-	json = fullBoard.toJSON();
-	assert.equal(json, jsonFullBoard, "Check if full board is correctly written to JSON");
+	text = fullBoard.toText();
+	assert.equal(text, textFullBoard, "Check if full board is correctly written to text");
 });
 
 QUnit.test("Validate changes to possible values", function( assert ) {
 	var aBoard = new board();
 	aBoard.setValue(0,0,1);
 	
-	assert.ok(!aBoard.isValuePossible(0,0,1), "Check if 1 is not possible at 0,0");
+	assert.ok(isEqArrays(aBoard.getPossibleValues(0,0),[1]), "Check that 1 is the only possibility at 0,0");
 	for (var i=1;i<9;i++){
 		assert.ok(!aBoard.isValuePossible(0,i,1), "Check if 1 is not possible at 0,"+i);
 		assert.ok(!aBoard.isValuePossible(i,0,1), "Check if 1 is not possible at "+i+",0");
