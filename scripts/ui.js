@@ -81,11 +81,8 @@ function debugBoard(){
 function solveBoard(){
 	try {
 		var solver = new sudokuSolver(sudokuBoard);
-		var isSolved = solver.solve();
+		sudokuBoard = solver.solve();
 		refresh();
-		if (isSolved) {
-			alert('Great Success');
-		}
 	} catch (e) {
 		alert (e);
 	}

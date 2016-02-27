@@ -20,31 +20,6 @@ QUnit.test("Validate board to text", function( assert ) {
 	assert.equal(text, textFullBoard, "Check if full board is correctly written to text");
 });
 
-QUnit.test("Validate changes to possible values", function( assert ) {
-	var aBoard = new board();
-	aBoard.setValue(0,0,1);
-	
-	assert.ok(isEqArrays(aBoard.getPossibleValues(0,0),[1]), "Check that 1 is the only possibility at 0,0");
-	for (var i=1;i<9;i++){
-		assert.ok(!aBoard.isValuePossible(0,i,1), "Check if 1 is not possible at 0,"+i);
-		assert.ok(!aBoard.isValuePossible(i,0,1), "Check if 1 is not possible at "+i+",0");
-	}
-	
-	for (var i=1;i<3;i++){
-		for (var j=1;j<3;j++){
-			assert.ok(!aBoard.isValuePossible(i,j,1), "Check if 1 is not possible at "+i+","+j);
-		}
-	}
-	
-	var otherBoard = aBoard.clone();
-	otherBoard.setValue(0,0,1);
-	assert.boardEquals(otherBoard, aBoard, "Check if setting the same value doesn't change the board");
-	
-	otherBoard.clearValue(0,0);
-	assert.boardEquals(otherBoard, emptyBoard, "Check if resetting a value will reset the possible values");
-
-});
-
 QUnit.test("Validate board.clone()", function( assert ) {
 	var aBoard = someBoard.clone();
 	assert.boardEquals(aBoard, someBoard, "Check if cloned board is equal to the original");

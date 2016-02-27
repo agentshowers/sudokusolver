@@ -1,8 +1,16 @@
 function sudokuSolver(boardToSolve) {
-	this.board = boardToSolve;
+	this.board = boardToSolve.clone();
+	this.possibleValues = [];
+	for(var i=0; i<9; i++) {
+		this.possibleValues[i] = new Array(9);
+		for (var j=0; j<9; j++) {
+			this.possibleValues[i][j] = [1,2,3,4,5,6,7,8,9];
+		}
+	}
 }
 
 sudokuSolver.prototype.solve = function(){
+	this.calculatePossibilities();
 	var changed;
 	do {
 		changed = false;
@@ -13,6 +21,10 @@ sudokuSolver.prototype.solve = function(){
 			changed = changed || this.checkSingleZone(i);
 		}
 	} while(changed && !this.board.isSolved());
+	if (!this.board.isSolved()){
+		this.bruteForce();
+	}
+	return this.board;
 }
 
 sudokuSolver.prototype.checkSingularTiles = function(){
@@ -20,11 +32,11 @@ sudokuSolver.prototype.checkSingularTiles = function(){
 	
 	for (var i=0;i<9;i++){
 		for (var j=0;j<9;j++) {
-			if (!this.board.hasValue(i,j) && this.board.getPossibleValues(i,j).length === 0){
+			if (this.possibleValues[i][j].length === 0){
 				throw  'Impossible Board';
 			}
-			if (!this.board.hasValue(i,j) && this.board.getPossibleValues(i,j).length === 1){
-				this.board.setValue(i,j,this.board.getPossibleValues(i,j)[0]);
+			if (!this.board.hasValue(i,j) && this.possibleValues[i][j].length === 1){
+				this.setValue(i,j,this.possibleValues[i][j][0]);
 				changed = true;
 			}
 		}
@@ -45,7 +57,7 @@ sudokuSolver.prototype.checkSingleRow = function(row){
 		for (var j=0; j<9; j++) {
 			if (this.board.hasValue(row,j)){
 				availableSquares[this.board.getValue(row,j) - 1].push(j);
-			} else if (this.board.isValuePossible(row,j,i+1)) {
+			} else if (this.isValuePossible(row,j,i+1)) {
 				availableSquares[i].push(j);
 			}
 		}
@@ -58,7 +70,7 @@ sudokuSolver.prototype.checkSingleRow = function(row){
 		if (availableSquares[i].length === 1) {
 			var column = availableSquares[i][0];
 			if (!this.board.hasValue(row,column)){
-				this.board.setValue(row,column,i+1);
+				this.setValue(row,column,i+1);
 				changed = true;
 			}
 		}
@@ -78,7 +90,7 @@ sudokuSolver.prototype.checkSingleColumn = function(column){
 		for (var i=0; i<9; i++) {
 			if (this.board.hasValue(i,column)){
 				availableSquares[this.board.getValue(i,column) - 1].push(i);
-			} else if (this.board.isValuePossible(i,column,j+1)) {
+			} else if (this.isValuePossible(i,column,j+1)) {
 				availableSquares[j].push(i);
 			}
 		}
@@ -91,7 +103,7 @@ sudokuSolver.prototype.checkSingleColumn = function(column){
 		if (availableSquares[j].length === 1) {
 			var row = availableSquares[j][0];
 			if (!this.board.hasValue(row,column)){
-				this.board.setValue(row,column,j+1);
+				this.setValue(row,column,j+1);
 				changed = true;
 			}
 		}
@@ -116,7 +128,7 @@ sudokuSolver.prototype.checkSingleZone = function(zone) {
 				var column = y_zone * 3 + c;
 				if (this.board.hasValue(row,column)){
 					availableSquares[this.board.getValue(row,column) - 1].push({x:row, y:column});
-				} else if (this.board.isValuePossible(row,column,i+1)) {
+				} else if (this.isValuePossible(row,column,i+1)) {
 					availableSquares[i].push({x:row, y:column});
 				}
 			}
@@ -131,11 +143,82 @@ sudokuSolver.prototype.checkSingleZone = function(zone) {
 			var row = availableSquares[i][0].x;
 			var column = availableSquares[i][0].y;
 			if (!this.board.hasValue(row,column)){
-				this.board.setValue(row,column,i+1);
+				this.setValue(row,column,i+1);
 				changed = true;
 			}
 		}
 	}
 	
 	return changed;
+}
+
+sudokuSolver.prototype.bruteForce = function(){
+	var row;
+	var column;
+	
+	var i=0;
+	do {
+		var j=0;
+		do {
+			if (!this.board.hasValue(i,j)){
+				row = i;
+				column = j;
+			}
+			j++;
+		} while (column === undefined && j<9);
+		i++;
+	} while (row === undefined && i<9);
+	
+	if (row === undefined) {
+		throw 'Some error ocurred - can\'t find first empty square';
+	}
+	
+	for (var i=0; i<this.possibleValues[row][column].length && !this.board.isSolved(); i++) {
+		var value = this.possibleValues[row][column][i];
+		var newSolver = new sudokuSolver(this.board);
+		newSolver.setValue(row,column,value);
+		try {
+			this.board = newSolver.solve();
+		}
+		catch (e) {
+			//path was impossible to solve
+		}
+	}
+	
+	if (!this.board.isSolved()) {
+		throw 'Impossible Board';
+	}
+}
+
+sudokuSolver.prototype.calculatePossibilities = function() {
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			if (this.board.hasValue(i,j)) {
+				this.removePossibilities (i,j,this.board.getValue(i,j));
+			}
+		}
+	}
+}
+
+sudokuSolver.prototype.setValue = function(x,y,value) {
+	this.board.setValue(x,y,value);
+	this.removePossibilities(x,y,value);
+}
+
+sudokuSolver.prototype.removePossibilities = function (x,y,value) {
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			if (i === x || j === y || zone(x,y) === zone(i,j)) {
+				var index = this.possibleValues[i][j].indexOf(value);
+				if (index > -1) {
+					this.possibleValues[i][j].splice(index,1);
+				}
+			}
+		}
+	}
+	this.possibleValues[x][y] = [value];
+}
+
+sudokuSolver.prototype.isValuePossible = function (x,y,value) {
+	return this.possibleValues[x][y].indexOf(value) > -1;
 }
