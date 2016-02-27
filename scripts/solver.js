@@ -7,10 +7,19 @@ function sudokuSolver(boardToSolve) {
 			this.possibleValues[i][j] = [1,2,3,4,5,6,7,8,9];
 		}
 	}
+	this.calculatePossibilities();
 }
 
 sudokuSolver.prototype.solve = function(){
-	this.calculatePossibilities();
+	this.simpleSolve();
+	
+	if (!this.board.isSolved()){
+		this.bruteForce();
+	}
+	return this.board;
+}
+
+sudokuSolver.prototype.simpleSolve = function (){
 	var changed;
 	do {
 		changed = false;
@@ -21,10 +30,6 @@ sudokuSolver.prototype.solve = function(){
 			changed = changed || this.checkSingleZone(i);
 		}
 	} while(changed && !this.board.isSolved());
-	if (!this.board.isSolved()){
-		this.bruteForce();
-	}
-	return this.board;
 }
 
 sudokuSolver.prototype.checkSingularTiles = function(){
@@ -190,6 +195,11 @@ sudokuSolver.prototype.bruteForce = function(){
 	}
 }
 
+sudokuSolver.prototype.setValue = function(x,y,value) {
+	this.board.setValue(x,y,value);
+	this.removePossibilities(x,y,value);
+}
+
 sudokuSolver.prototype.calculatePossibilities = function() {
 	for (var i=0;i<9;i++){
 		for (var j=0;j<9;j++){
@@ -198,11 +208,6 @@ sudokuSolver.prototype.calculatePossibilities = function() {
 			}
 		}
 	}
-}
-
-sudokuSolver.prototype.setValue = function(x,y,value) {
-	this.board.setValue(x,y,value);
-	this.removePossibilities(x,y,value);
 }
 
 sudokuSolver.prototype.removePossibilities = function (x,y,value) {

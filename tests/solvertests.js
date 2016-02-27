@@ -10,9 +10,9 @@ QUnit.test("Validate simple solver scenarios", function( assert ) {
 	aBoard.setValue(2,1,8);
 	
 	var aSolver = new sudokuSolver(aBoard);
-	aBoard = aSolver.solve();
+	aSolver.simpleSolve(); //don't call full solve to avoid going through the brute force
 	
-	assert.equal(aBoard.getValue(2,2),9,"Expected solver to identify single possibility for tile");
+	assert.equal(aSolver.board.getValue(2,2),9,"Expected solver to identify single possibility for tile");
 	
 	aBoard = new board();
 	aBoard.setValue(0,0,1);
@@ -21,9 +21,9 @@ QUnit.test("Validate simple solver scenarios", function( assert ) {
 	aBoard.setValue(2,7,3);
 	
 	aSolver = new sudokuSolver(aBoard);
-	aBoard = aSolver.solve();
+	aSolver.simpleSolve(); //don't call full solve to avoid going through the brute force
 	
-	assert.equal(aBoard.getValue(0,2),3,"Expected solver to identify single possibility for row");
+	assert.equal(aSolver.board.getValue(0,2),3,"Expected solver to identify single possibility for row");
 	
 	aBoard = new board();
 	aBoard.setValue(0,0,1);
@@ -32,9 +32,9 @@ QUnit.test("Validate simple solver scenarios", function( assert ) {
 	aBoard.setValue(7,2,3);
 	
 	aSolver = new sudokuSolver(aBoard);
-	aBoard = aSolver.solve();
+	aSolver.simpleSolve(); //don't call full solve to avoid going through the brute force
 	
-	assert.equal(aBoard.getValue(2,0),3,"Expected solver to identify single possibility for column");
+	assert.equal(aSolver.board.getValue(2,0),3,"Expected solver to identify single possibility for column");
 	
 	aBoard = new board();
 	aBoard.setValue(0,0,1);
@@ -46,16 +46,21 @@ QUnit.test("Validate simple solver scenarios", function( assert ) {
 	aBoard.setValue(3,1,3);
 	
 	aSolver = new sudokuSolver(aBoard);
-	aBoard = aSolver.solve();
+	aSolver.simpleSolve(); //don't call full solve to avoid going through the brute force
 	
-	assert.equal(aBoard.getValue(0,2),3,"Expected solver to identify single possibility for zone");
+	assert.equal(aSolver.board.getValue(0,2),3,"Expected solver to identify single possibility for zone");
 });
 
-QUnit.test("Test that a simple board can be solved", function( assert ) {
+QUnit.test("Test that boards can be solved", function( assert ) {
 	var boardToSolve = simpleBoard.clone();
 	var aSolver = new sudokuSolver(boardToSolve);
 	boardToSolve = aSolver.solve();
-	assert.ok(boardToSolve.isSolved(),"Expected board to be solved");
+	assert.ok(boardToSolve.isSolved(),"Expected simple board to be solved");
+	
+	boardToSolve = new board();
+	aSolver = new sudokuSolver(boardToSolve);
+	boardToSolve = aSolver.solve();
+	assert.ok(boardToSolve.isSolved(),"Expected empty board to be solved");
 });
 
 QUnit.test("Test that impossible boards are detected", function( assert ) {
