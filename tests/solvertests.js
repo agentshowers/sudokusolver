@@ -57,3 +57,36 @@ QUnit.test("Test that a simple board can be solved", function( assert ) {
 	aSolver.solve();
 	assert.ok(boardToSolve.isSolved(),"Expected board to be solved");
 });
+
+QUnit.test("Test that impossible boards are detected", function( assert ) {
+	var boardToSolve = new board();
+	boardToSolve.setValue(0,0,1);
+	boardToSolve.setValue(0,1,2);
+	boardToSolve.setValue(0,2,3);
+	boardToSolve.setValue(1,3,4);
+	boardToSolve.setValue(2,6,4);
+	
+	var aSolver = new sudokuSolver(boardToSolve);
+	assert.raises(function() {aSolver.solve()}, /Impossible Board/, "Expected solver to detect that '4' can't be placed anywhere on row '0'");
+	
+	boardToSolve = new board();
+	boardToSolve.setValue(0,0,1);
+	boardToSolve.setValue(1,0,2);
+	boardToSolve.setValue(2,0,3);
+	boardToSolve.setValue(3,1,4);
+	boardToSolve.setValue(6,2,4);
+	
+	aSolver = new sudokuSolver(boardToSolve);
+	assert.raises(function() {aSolver.solve()}, /Impossible Board/, "Expected solver to detect that '4' can't be placed anywhere on column '0'");
+	
+	boardToSolve = new board();
+	boardToSolve.setValue(0,0,1);
+	boardToSolve.setValue(1,0,2);
+	boardToSolve.setValue(2,3,4);
+	boardToSolve.setValue(3,1,4);
+	boardToSolve.setValue(6,2,4);
+	
+	aSolver = new sudokuSolver(boardToSolve);
+	assert.raises(function() {aSolver.solve()}, /Impossible Board/, "Expected solver to detect that '4' can't be placed anywhere on zone '0'");
+	
+});

@@ -52,3 +52,9 @@ QUnit.test("Validate board.clone()", function( assert ) {
 	aBoard.setValue(0,0,9);
 	assert.equal(someBoard.getValue(0,0), 1, "Check if changes to cloned board don't affect original board");
 });
+
+QUnit.test("Validate isSolved()", function( assert ) {
+	assert.ok(!emptyBoard.isSolved(), "Validate that empty board is not solved");
+	assert.ok(!someBoard.isSolved(), "Validate that random board is not solved");
+	assert.ok(fullBoard.isSolved(), "Validate that full board is solved");
+});
