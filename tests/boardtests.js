@@ -33,3 +33,25 @@ QUnit.test("Validate isSolved()", function( assert ) {
 	assert.ok(!someBoard.isSolved(), "Validate that random board is not solved");
 	assert.ok(fullBoard.isSolved(), "Validate that full board is solved");
 });
+
+QUnit.test("Check board validation", function( assert ) {
+	var aBoard = new board();
+	
+	assert.ok(aBoard.isValid(), "Check if empty board is valid");
+	
+	aBoard.setValue(0,0,1);
+	aBoard.setValue(0,3,1);
+	aBoard.setValue(3,0,1);
+
+	assert.ok(!aBoard.isValid(), "Check that board is invalid");
+	assert.ok(!aBoard.isSquareValid(0,0), "Check that 0,0 is invalid");
+	assert.ok(!aBoard.isSquareValid(0,3), "Check that 0,3 is invalid");
+	assert.ok(!aBoard.isSquareValid(3,0), "Check that 3,0 is invalid");
+	
+	aBoard.setValue(3,0,2);
+	
+	assert.ok(!aBoard.isValid(), "Check that removing only one conflict still keeps an invalid board");
+	assert.ok(!aBoard.isSquareValid(0,0), "Check that 0,0 is invalid");
+	assert.ok(!aBoard.isSquareValid(0,3), "Check that 0,3 is invalid");
+	assert.ok(aBoard.isSquareValid(3,0), "Check that 3,0 is valid");
+});

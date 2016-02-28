@@ -51,12 +51,25 @@ function refresh(){
 }
 
 function refreshTile(i, j){
+	var tileId = '#input_'+i+'_'+j;
+	var value;
+	var color;
 	if (sudokuBoard.hasValue(i,j)) {
-		$('#input_'+i+'_'+j).val(sudokuBoard.getValue(i,j));
+		value = sudokuBoard.getValue(i,j);
 	}
 	else {
-		$('#input_'+i+'_'+j).val('');
+		value = ' ';
 	}
+	if (sudokuBoard.isSquareValid(i,j)){
+		color = 'black';
+	} else {
+		color = 'red';
+	}
+	
+	$(tileId).val(value);
+	$(tileId).css({
+		'color':color,
+	});
 }
 
 function setValue (i, j, value) {
@@ -64,10 +77,10 @@ function setValue (i, j, value) {
 		if (value === 0) { //value was deleted
 			sudokuBoard.clearValue(i,j);
 		}
-		refreshTile(i,j);
 	} else {
 		sudokuBoard.setValue(i,j,value);
 	}
+	refresh();
 }
 
 function isValidValue (value) {

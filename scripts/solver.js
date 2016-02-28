@@ -213,7 +213,7 @@ sudokuSolver.prototype.calculatePossibilities = function() {
 sudokuSolver.prototype.removePossibilities = function (x,y,value) {
 	for (var i=0;i<9;i++){
 		for (var j=0;j<9;j++){
-			if (i === x || j === y || zone(x,y) === zone(i,j)) {
+			if ((i === x || j === y || zone(x,y) === zone(i,j)) && (i !== x || j !== y)) {
 				var index = this.possibleValues[i][j].indexOf(value);
 				if (index > -1) {
 					this.possibleValues[i][j].splice(index,1);
@@ -221,7 +221,6 @@ sudokuSolver.prototype.removePossibilities = function (x,y,value) {
 			}
 		}
 	}
-	this.possibleValues[x][y] = [value];
 }
 
 sudokuSolver.prototype.isValuePossible = function (x,y,value) {

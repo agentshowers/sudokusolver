@@ -9,11 +9,8 @@ function board (){
 }
 
 board.prototype.setValue = function(x, y, value){
-	if (value === undefined){
-		return;
-	}
-	
 	this.innerBoard[x][y].setValue(value);
+	this.revalidate();
 }
 
 board.prototype.getValue = function(x, y){
@@ -41,8 +38,47 @@ board.prototype.isSolved = function (){
 	return true;
 }
 
-board.prototype.isImpossible = function (){
-	return false;
+board.prototype.isValid = function (){
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			if (!this.isSquareValid(i,j)){
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}
+
+board.prototype.isSquareValid = function (x,y) {
+	return this.innerBoard[x][y].isValid();
+}
+
+board.prototype.revalidate = function(){
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			this.innerBoard[i][j].validate();
+		}
+	}
+	
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			this.revalidateSquare(i,j);
+		}
+	}
+}
+
+board.prototype.revalidateSquare = function(x,y) {
+	for (var i=0;i<9;i++){
+		for (var j=0;j<9;j++){
+			if ((i === x || j === y || zone(x,y) === zone(i,j)) && (i !== x || j !== y)) {
+				if (this.hasValue(i,j) && this.getValue(i,j) === this.getValue(x,y)){
+					this.innerBoard[i][j].invalidate();
+					this.innerBoard[x][y].invalidate();
+				}
+			}
+		}
+	}
 }
 
 board.prototype.clone = function (){
