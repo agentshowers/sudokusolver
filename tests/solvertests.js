@@ -95,3 +95,13 @@ QUnit.test("Test that impossible boards are detected", function( assert ) {
 	assert.raises(function() {aSolver.solve()}, /Impossible Board/, "Expected solver to detect that '4' can't be placed anywhere on zone '0'");
 	
 });
+
+QUnit.test("Test that solver throws an exception when solving invalid board", function( assert ) {
+	var boardToSolve = new board();
+	
+	boardToSolve.setValue(0,0,1);
+	boardToSolve.setValue(0,3,1);
+	
+	aSolver = new sudokuSolver(boardToSolve);
+	assert.raises(function() {aSolver.solve()}, /Can't solve invalid board/, "Expected solver to detect invalid board");
+});

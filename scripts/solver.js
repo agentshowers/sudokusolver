@@ -11,6 +11,10 @@ function sudokuSolver(boardToSolve) {
 }
 
 sudokuSolver.prototype.solve = function(){
+	if (!this.board.isValid()){
+		throw 'Can\'t solve invalid board';
+	}
+	
 	this.simpleSolve();
 	
 	if (!this.board.isSolved()){
